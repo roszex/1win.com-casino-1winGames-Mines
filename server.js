@@ -122,9 +122,9 @@ app.post('/api/reset-prediction', (req, res) => {
   }
 });
 
-// Главная страница - показывает открытое поле (прогноз)
+// Главная страница - показывает статистику
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+  res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 // Страница прогноза

@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <title>KONEVSKY Signals</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link rel="stylesheet" href="styles/index.css?v=2.1.0&t=1736360000">
+  </head>
+  <body>
+    <h1>Статистика сигналов</h1>
+    
+    <div class="date-display" id="dateDisplay">
+    </div>
+    
+    <div class="stats-container">
+      <div class="stat-item">
+        <div class="stat-label">Выдано</div>
+        <div class="stat-value" id="signalsCount">0</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-label">Прибыль KONEVSKY</div>
+        <div class="stat-value" id="konevskyProfit">0₽</div>
+      </div>
+      <div class="stat-item profit-red">
+        <div class="stat-label">Прибыль пользователей</div>
+        <div class="stat-value" id="userProfit">0₽</div>
+      </div>
+    </div>
+    
+    <button class="start-work-btn" onclick="startWorking()">
+      Начать работать
+    </button>
+    
+    <a href="/training" class="training-link" onclick="goToTraining(event)">
+      Обучение
+    </a>
+    
+    <div class="version-info">version 1.0.0</div>
+    <div class="copyright">All rights reserved</div>
+
+    <!-- Overlay загрузки -->
+    <div class="loading-overlay" id="loadingOverlay">
+      <div class="loading-spinner"></div>
+      <div class="loading-text">Анализируем данные...</div>
+      <div class="loading-progress" id="loadingProgress">0%</div>
+    </div>
+
+    <script>
+      // Инициализация Telegram WebApp для полноэкранного режима
+      function initTelegramWebApp() {
+        if (window.Telegram && window.Telegram.WebApp) {
+          const tg = window.Telegram.WebApp;
+          
+          try {
+            // Расширяем WebApp на весь экран
+            tg.expand();
+            
+            // Запрашиваем полноэкранный режим если доступен
+            if (tg.requestFullscreen) {
+              tg.requestFullscreen();
+            }
+            
+            // Устанавливаем цвета темы для соответствия приложению
+            tg.setHeaderColor('#000000');
+            tg.setBackgroundColor('#000000');
+            
+            // Отключаем подтверждение закрытия для предотвращения сообщения "изменения могут не сохраниться"
+            if (tg.enableClosingConfirmation) {
+              // Не включаем подтверждение закрытия
+            }
+            
+            // Устанавливаем основную кнопку если нужно
+            if (tg.MainButton) {
+              tg.MainButton.hide();
+            }
+            
+            console.log('Telegram WebApp инициализирован успешно в полноэкранном режиме');
+          } catch (error) {
+            console.error('Ошибка инициализации Telegram WebApp:', error);
+          }
+        } else {
+          console.log('Telegram WebApp недоступен - запуск в режиме браузера');
+        }
+      }
+      
+      // Инициализируем WebApp
+      initTelegramWebApp();
+      
+      // Убираем анимации при загрузке - элементы статичны
+      
+      // Функция для форматирования чисел с точками
+      function formatNumber(num) {
+        return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+      }
+      
+      // Загружаем статистику
+      async function loadStats() {
+        try {
+          const response = await fetch('/api/stats');
+          const data = await response.json();
+          
+          document.getElementById('signalsCount').textContent = formatNumber(data.signalsCount || 0);
+          document.getElementById('userProfit').textContent = formatNumber(data.userProfit || 0) + '₽';
+          
+          // Рассчитываем прибыль KONEVSKY как 10% от прибыли пользователей
+          const userProfit = data.userProfit || 0;
+          const konevskyProfit = Math.round(userProfit * 0.1);
+          document.getElementById('konevskyProfit').textContent = formatNumber(konevskyProfit) + '₽';
+          
+          // Обновляем дату
+          const now = new Date();
+          const dateString = now.toLocaleDateString('ru-RU', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric'
+          });
+          document.getElementById('dateDisplay').textContent = dateString;
+        } catch (error) {
+          console.error('Ошибка загрузки статистики:', error);
+        }
+      }
+      
+      function startWorking() {
+        console.log('startWorking вызвана');
+        
+        // Показываем красивую загрузку
+        showLoading();
+        
+        // Быстрая загрузка 2 секунды
+        const loadingTime = 2000; // 2000ms
+        const startTime = Date.now();
+        
+        // Симуляция прогресса
+        let progress = 0;
+        console.log('Начало загрузки, время:', loadingTime + 'ms');
+        
+        const progressInterval = setInterval(() => {
+          const elapsed = Date.now() - startTime;
+          const timeProgress = Math.min((elapsed / loadingTime) * 100, 100);
+          
+          // Плавный прогресс
+          progress = timeProgress;
+          
+          const loadingProgress = document.getElementById('loadingProgress');
+          if (loadingProgress) loadingProgress.textContent = Math.round(progress) + '%';
+          console.log('Прогресс:', Math.round(progress) + '%', 'Время:', elapsed + 'ms');
+          
+          if (progress >= 100) {
+            console.log('Достигнут 100%, переход...');
+            clearInterval(progressInterval);
+            // Показываем финальное состояние
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            const loadingText = document.getElementById('loadingText');
+            const loadingProgress = document.getElementById('loadingProgress');
+            
+            if (loadingOverlay) loadingOverlay.style.background = '#000000';
+            if (loadingText) loadingText.textContent = 'Переход...';
+            if (loadingProgress) loadingProgress.textContent = '100%';
+            
+            // Переходим сразу
+            window.location.href = '/prediction';
+          }
+        }, 50);
+      }
+      
+      function showLoading() {
+        const overlay = document.getElementById('loadingOverlay');
+        overlay.classList.add('show');
+      }
+      
+      function hideLoading() {
+        const overlay = document.getElementById('loadingOverlay');
+        overlay.classList.remove('show');
+      }
+      
+      function goToTraining(event) {
+        event.preventDefault();
+        
+        // Анимация исчезновения страницы
+        document.body.style.transition = 'opacity 0.2s ease-out, transform 0.2s ease-out';
+        document.body.style.opacity = '0';
+        document.body.style.transform = 'translateY(-20px)';
+        
+        // Переход после анимации
+        setTimeout(() => {
+          window.location.href = '/training';
+        }, 200);
+      }
+
+      // Загружаем данные при загрузке страницы
+      loadStats();
+    </script>
+  </body>
+</html>
