@@ -7,8 +7,8 @@ if (!fs.existsSync(distDir)) {
   fs.mkdirSync(distDir, { recursive: true });
 }
 
-// Копируем HTML файлы (приоритет собранным файлам)
-const htmlFiles = ['index.html', 'prediction.html', 'training.html'];
+// Копируем HTML файлы (только собранные файлы для index.html)
+const htmlFiles = ['prediction.html', 'training.html'];
 htmlFiles.forEach(htmlFile => {
   const possiblePaths = [
     path.join(__dirname, 'public', 'dist', htmlFile), // Собранные файлы
