@@ -1,18 +1,39 @@
 const fs = require('fs');
 const path = require('path');
 
+// Создаем папку dist если её нет
+const distDir = path.join(__dirname, 'dist');
+if (!fs.existsSync(distDir)) {
+  fs.mkdirSync(distDir, { recursive: true });
+}
+
 // Копируем изображения в dist
 const images = ['1win_logo.png', 'attention.png', 'background.png', 'mines.png', 'star.png'];
 
 images.forEach(image => {
-  const srcPath = path.join(__dirname, 'public', image);
-  const destPath = path.join(__dirname, 'dist', image);
+  // Проверяем несколько возможных путей
+  const possiblePaths = [
+    path.join(__dirname, 'public', image),
+    path.join(__dirname, image),
+    path.join(__dirname, '..', 'public', image),
+    path.join(__dirname, '..', image)
+  ];
   
-  if (fs.existsSync(srcPath)) {
+  let srcPath = null;
+  for (const possiblePath of possiblePaths) {
+    if (fs.existsSync(possiblePath)) {
+      srcPath = possiblePath;
+      break;
+    }
+  }
+  
+  const destPath = path.join(distDir, image);
+  
+  if (srcPath) {
     fs.copyFileSync(srcPath, destPath);
-    console.log(`Скопирован: ${image}`);
+    console.log(`Скопирован: ${image} из ${srcPath}`);
   } else {
-    console.log(`Не найден: ${image}`);
+    console.log(`Не найден: ${image} в любом из путей:`, possiblePaths);
   }
 });
 
