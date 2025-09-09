@@ -37,7 +37,7 @@ htmlFiles.forEach(htmlFile => {
   }
 });
 
-// Копируем собранное React приложение из public/dist
+// Копируем собранное React приложение из public/dist (если есть)
 const publicDistDir = path.join(__dirname, 'public', 'dist');
 if (fs.existsSync(publicDistDir)) {
   console.log('Копируем собранное React приложение...');
@@ -54,6 +54,8 @@ if (fs.existsSync(publicDistDir)) {
     }
     console.log(`Скопирован: ${file}`);
   });
+} else {
+  console.log('Папка public/dist не найдена, пропускаем копирование React приложения');
 }
 
 // Копируем изображения в dist
