@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>Обучение - KONEVSKY</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link rel="stylesheet" href="styles/training.css?v=1.4.0">
+</head>
+<body>
+    <div class="container">
+        
+        <div class="instruction-box">
+            <div class="instruction-text">
+                Нажмите на кнопку "начать работать" в главном меню
+            </div>
+        </div>
+        
+        <div class="arrow">↓</div>
+        
+        <div class="instruction-box">
+            <div class="instruction-text">
+                Ожидайте, пока алгоритмы софта рассчитывают места мин на поле на основе вашего айди пользователя.
+            </div>
+        </div>
+        
+        <div class="arrow">↓</div>
+        
+        <div class="instruction-box">
+            <div class="instruction-text">
+                Как только расчёт будет закончен, выставите у себя в игре нужное кол-во мин и звёзд и начинайте зарабатывать!
+            </div>
+        </div>
+    </div>
+    
+    <button class="back-btn" onclick="goBack()">
+        Назад в меню
+    </button>
+
+    <script>
+        // Убираем анимации при загрузке - элементы статичны
+        
+        // Инициализация Telegram WebApp
+        function initTelegramWebApp() {
+            if (window.Telegram && window.Telegram.WebApp) {
+                const tg = window.Telegram.WebApp;
+                
+                try {
+                    tg.expand();
+                    
+                    if (tg.requestFullscreen) {
+                        tg.requestFullscreen();
+                    }
+                    
+                    tg.setHeaderColor('#000000');
+                    tg.setBackgroundColor('#000000');
+                    
+                    if (tg.MainButton) {
+                        tg.MainButton.hide();
+                    }
+                    
+                    console.log('Telegram WebApp инициализирован успешно');
+                } catch (error) {
+                    console.error('Ошибка инициализации Telegram WebApp:', error);
+                }
+            } else {
+                console.log('Telegram WebApp недоступен - запуск в режиме браузера');
+            }
+        }
+        
+        // Инициализируем WebApp
+        initTelegramWebApp();
+        
+        function goBack() {
+            // Анимация исчезновения страницы
+            document.body.style.transition = 'opacity 0.2s ease-out, transform 0.2s ease-out';
+            document.body.style.opacity = '0';
+            document.body.style.transform = 'translateY(20px)';
+            
+            // Переход после анимации
+            setTimeout(() => {
+                window.location.href = '/';
+            }, 200);
+        }
+    </script>
+</body>
+</html>

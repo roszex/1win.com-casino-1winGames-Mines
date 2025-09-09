@@ -1,0 +1,458 @@
+/* Страница прогноза - prediction.css */
+/* Версия: 1.1.0 */
+
+/* Анимации переходов */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInFromLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInFromRight {
+  from {
+    opacity: 0;
+    transform: translateX(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Анимация появления элементов */
+.fade-in-up {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+.slide-in-left {
+  animation: slideInFromLeft 0.6s ease-out;
+}
+
+.slide-in-right {
+  animation: slideInFromRight 0.6s ease-out;
+}
+
+.scale-in {
+  animation: scaleIn 0.6s ease-out;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: #000000;
+  color: white;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  text-align: center;
+  overflow: hidden;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  padding-top: 60px;
+}
+
+h1 {
+  font-size: 32px;
+  margin-bottom: 30px;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+}
+
+.game-field {
+  position: relative;
+  width: 400px;
+  height: 400px;
+  margin: 20px;
+  background: #4e4e4e;
+  border-radius: 20px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeInScale 0.5s ease-in-out;
+}
+
+.game-field::before {
+  content: '';
+  position: absolute;
+  top: -8px;
+  left: -8px;
+  right: -8px;
+  bottom: -8px;
+  background: linear-gradient(45deg, #2c2c2c, #4a4a4a, #6a6a6a, #8a8a8a, #aaaaaa, #8a8a8a, #6a6a6a, #4a4a4a);
+  border-radius: 28px;
+  z-index: -1;
+  animation: grayBorder 12s linear infinite;
+}
+
+.cells-container {
+  position: relative;
+  width: 390px;
+  height: 390px;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: repeat(5, 1fr);
+  gap: 8px;
+}
+
+.game-cell {
+  width: 70px;
+  height: 70px;
+  background-color: #2E3035;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.5s ease;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+  border: 1px solid rgba(78, 205, 196, 0.3);
+}
+
+.game-cell.revealed.star {
+  background: linear-gradient(to bottom, #1c375f, #2e6db5);
+  border-color: #2e6db5;
+}
+
+.game-cell.revealed.mine {
+  background: linear-gradient(to bottom, #550000, #FF6B00);
+  border-color: #FF6B00;
+}
+
+.star-image, .mine-image {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+}
+
+.loading {
+  font-size: 18px;
+  margin-top: 50px;
+}
+
+.finish-btn {
+  background: linear-gradient(45deg, #ff6b6b, #ee5a52);
+  color: white;
+  border: none;
+  padding: 15px 30px;
+  font-size: 18px;
+  font-weight: bold;
+  border-radius: 25px;
+  cursor: pointer;
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
+  max-width: 300px;
+  margin: 0;
+  display: block;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+  z-index: 1000;
+}
+
+.finish-btn:hover {
+  transform: translateX(-50%) translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+}
+
+/* Счетчики */
+.stats-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: 400px;
+  margin: 20px auto;
+  padding: 0 20px;
+}
+
+.stats-row .stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: rgba(0,0,0,0.5);
+  border: 1px solid #494949;
+  border-radius: 10px;
+  padding: 15px 20px;
+  min-width: 80px;
+}
+
+.stats-row .stat-icon {
+  font-size: 24px;
+  margin-bottom: 5px;
+}
+
+.stats-row .stat-label {
+  color: #ffffff;
+  font-size: 14px;
+  margin-bottom: 5px;
+  font-weight: 500;
+}
+
+.stats-row .stat-value {
+  color: #ffffff;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+/* Мобильный дизайн */
+@media (max-width: 768px) {
+  body {
+    padding: 10px;
+    justify-content: flex-start;
+    padding-top: 100px;
+  }
+  
+  h1 {
+    font-size: 36px;
+    margin-bottom: 20px;
+  }
+  
+  .game-field {
+    width: 100%;
+    max-width: 320px;
+    height: 320px;
+    margin: 10px auto;
+    padding: 5px;
+  }
+  
+  .cells-container {
+    width: 100%;
+    height: 100%;
+    gap: 4px;
+  }
+  
+  .game-cell {
+    width: 100%;
+    height: 100%;
+    min-width: 0;
+    min-height: 0;
+  }
+  
+  .star-image, .mine-image {
+    width: 80%;
+    height: 80%;
+    max-width: 50px;
+    max-height: 50px;
+  }
+  
+  .stats-row {
+    max-width: 320px;
+    margin: 15px auto;
+    padding: 0 10px;
+  }
+  
+  .stats-row .stat-item {
+    padding: 12px 15px;
+    min-width: 70px;
+  }
+  
+  .stats-row .stat-icon {
+    font-size: 20px;
+  }
+  
+  .stats-row .stat-label {
+    font-size: 12px;
+  }
+  
+  .stats-row .stat-value {
+    font-size: 18px;
+  }
+  
+  .finish-btn {
+    width: 90%;
+    max-width: 200px;
+    bottom: 50px;
+  }
+}
+
+/* Очень маленькие экраны */
+@media (max-width: 480px) {
+  .game-field {
+    max-width: 280px;
+    height: 280px;
+  }
+  
+  .star-image, .mine-image {
+    width: 70%;
+    height: 70%;
+    max-width: 40px;
+    max-height: 40px;
+  }
+  
+  .stats-row {
+    max-width: 280px;
+    margin: 10px auto;
+  }
+  
+  .stats-row .stat-item {
+    padding: 10px 12px;
+    min-width: 60px;
+  }
+  
+  .stats-row .stat-icon {
+    font-size: 18px;
+  }
+  
+  .stats-row .stat-label {
+    font-size: 11px;
+  }
+  
+  .stats-row .stat-value {
+    font-size: 16px;
+  }
+  
+  .finish-btn {
+    width: 95%;
+  }
+}
+
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes grayBorder {
+  0% {
+    background: linear-gradient(0deg, #2c2c2c, #4a4a4a, #6a6a6a, #8a8a8a, #aaaaaa, #8a8a8a, #6a6a6a, #4a4a4a);
+  }
+  3.125% {
+    background: linear-gradient(11.25deg, #2c2c2c, #4a4a4a, #6a6a6a, #8a8a8a, #aaaaaa, #8a8a8a, #6a6a6a, #4a4a4a);
+  }
+  6.25% {
+    background: linear-gradient(22.5deg, #2c2c2c, #4a4a4a, #6a6a6a, #8a8a8a, #aaaaaa, #8a8a8a, #6a6a6a, #4a4a4a);
+  }
+  9.375% {
+    background: linear-gradient(33.75deg, #2c2c2c, #4a4a4a, #6a6a6a, #8a8a8a, #aaaaaa, #8a8a8a, #6a6a6a, #4a4a4a);
+  }
+  12.5% {
+    background: linear-gradient(45deg, #2c2c2c, #4a4a4a, #6a6a6a, #8a8a8a, #aaaaaa, #8a8a8a, #6a6a6a, #4a4a4a);
+  }
+  15.625% {
+    background: linear-gradient(56.25deg, #2c2c2c, #4a4a4a, #6a6a6a, #8a8a8a, #aaaaaa, #8a8a8a, #6a6a6a, #4a4a4a);
+  }
+  18.75% {
+    background: linear-gradient(67.5deg, #2c2c2c, #4a4a4a, #6a6a6a, #8a8a8a, #aaaaaa, #8a8a8a, #6a6a6a, #4a4a4a);
+  }
+  21.875% {
+    background: linear-gradient(78.75deg, #2c2c2c, #4a4a4a, #6a6a6a, #8a8a8a, #aaaaaa, #8a8a8a, #6a6a6a, #4a4a4a);
+  }
+  25% {
+    background: linear-gradient(90deg, #2c2c2c, #4a4a4a, #6a6a6a, #8a8a8a, #aaaaaa, #8a8a8a, #6a6a6a, #4a4a4a);
+  }
+  28.125% {
+    background: linear-gradient(101.25deg, #2c2c2c, #4a4a4a, #6a6a6a, #8a8a8a, #aaaaaa, #8a8a8a, #6a6a6a, #4a4a4a);
+  }
+  31.25% {
+    background: linear-gradient(112.5deg, #2c2c2c, #4a4a4a, #6a6a6a, #8a8a8a, #aaaaaa, #8a8a8a, #6a6a6a, #4a4a4a);
+  }
+  34.375% {
+    background: linear-gradient(123.75deg, #2c2c2c, #4a4a4a, #6a6a6a, #8a8a8a, #aaaaaa, #8a8a8a, #6a6a6a, #4a4a4a);
+  }
+  37.5% {
+    background: linear-gradient(135deg, #2c2c2c, #4a4a4a, #6a6a6a, #8a8a8a, #aaaaaa, #8a8a8a, #6a6a6a, #4a4a4a);
+  }
+  40.625% {
+    background: linear-gradient(146.25deg, #2c2c2c, #4a4a4a, #6a6a6a, #8a8a8a, #aaaaaa, #8a8a8a, #6a6a6a, #4a4a4a);
+  }
+  43.75% {
+    background: linear-gradient(157.5deg, #2c2c2c, #4a4a4a, #6a6a6a, #8a8a8a, #aaaaaa, #8a8a8a, #6a6a6a, #4a4a4a);
+  }
+  46.875% {
+    background: linear-gradient(168.75deg, #2c2c2c, #4a4a4a, #6a6a6a, #8a8a8a, #aaaaaa, #8a8a8a, #6a6a6a, #4a4a4a);
+  }
+  50% {
+    background: linear-gradient(180deg, #2c2c2c, #4a4a4a, #6a6a6a, #8a8a8a, #aaaaaa, #8a8a8a, #6a6a6a, #4a4a4a);
+  }
+  53.125% {
+    background: linear-gradient(191.25deg, #2c2c2c, #4a4a4a, #6a6a6a, #8a8a8a, #aaaaaa, #8a8a8a, #6a6a6a, #4a4a4a);
+  }
+  56.25% {
+    background: linear-gradient(202.5deg, #2c2c2c, #4a4a4a, #6a6a6a, #8a8a8a, #aaaaaa, #8a8a8a, #6a6a6a, #4a4a4a);
+  }
+  59.375% {
+    background: linear-gradient(213.75deg, #2c2c2c, #4a4a4a, #6a6a6a, #8a8a8a, #aaaaaa, #8a8a8a, #6a6a6a, #4a4a4a);
+  }
+  62.5% {
+    background: linear-gradient(225deg, #2c2c2c, #4a4a4a, #6a6a6a, #8a8a8a, #aaaaaa, #8a8a8a, #6a6a6a, #4a4a4a);
+  }
+  65.625% {
+    background: linear-gradient(236.25deg, #2c2c2c, #4a4a4a, #6a6a6a, #8a8a8a, #aaaaaa, #8a8a8a, #6a6a6a, #4a4a4a);
+  }
+  68.75% {
+    background: linear-gradient(247.5deg, #2c2c2c, #4a4a4a, #6a6a6a, #8a8a8a, #aaaaaa, #8a8a8a, #6a6a6a, #4a4a4a);
+  }
+  71.875% {
+    background: linear-gradient(258.75deg, #2c2c2c, #4a4a4a, #6a6a6a, #8a8a8a, #aaaaaa, #8a8a8a, #6a6a6a, #4a4a4a);
+  }
+  75% {
+    background: linear-gradient(270deg, #2c2c2c, #4a4a4a, #6a6a6a, #8a8a8a, #aaaaaa, #8a8a8a, #6a6a6a, #4a4a4a);
+  }
+  78.125% {
+    background: linear-gradient(281.25deg, #2c2c2c, #4a4a4a, #6a6a6a, #8a8a8a, #aaaaaa, #8a8a8a, #6a6a6a, #4a4a4a);
+  }
+  81.25% {
+    background: linear-gradient(292.5deg, #2c2c2c, #4a4a4a, #6a6a6a, #8a8a8a, #aaaaaa, #8a8a8a, #6a6a6a, #4a4a4a);
+  }
+  84.375% {
+    background: linear-gradient(303.75deg, #2c2c2c, #4a4a4a, #6a6a6a, #8a8a8a, #aaaaaa, #8a8a8a, #6a6a6a, #4a4a4a);
+  }
+  87.5% {
+    background: linear-gradient(315deg, #2c2c2c, #4a4a4a, #6a6a6a, #8a8a8a, #aaaaaa, #8a8a8a, #6a6a6a, #4a4a4a);
+  }
+  90.625% {
+    background: linear-gradient(326.25deg, #2c2c2c, #4a4a4a, #6a6a6a, #8a8a8a, #aaaaaa, #8a8a8a, #6a6a6a, #4a4a4a);
+  }
+  93.75% {
+    background: linear-gradient(337.5deg, #2c2c2c, #4a4a4a, #6a6a6a, #8a8a8a, #aaaaaa, #8a8a8a, #6a6a6a, #4a4a4a);
+  }
+  96.875% {
+    background: linear-gradient(348.75deg, #2c2c2c, #4a4a4a, #6a6a6a, #8a8a8a, #aaaaaa, #8a8a8a, #6a6a6a, #4a4a4a);
+  }
+  100% {
+    background: linear-gradient(360deg, #2c2c2c, #4a4a4a, #6a6a6a, #8a8a8a, #aaaaaa, #8a8a8a, #6a6a6a, #4a4a4a);
+  }
+}
