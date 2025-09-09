@@ -137,16 +137,16 @@ app.get('/training', (req, res) => {
   res.sendFile(path.join(__dirname, 'dist', 'training.html'));
 });
 
+// Страница игры mines по маршруту /1win
+app.get('/1win', (req, res) => {
+  res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+});
+
 // Статические файлы из папки styles
 app.use('/styles', express.static(path.join(__dirname, 'styles')));
 
 // Статические файлы из dist (собранные) - для всех путей
 app.use(express.static(path.join(__dirname, 'dist')));
-
-// Страница игры mines по маршруту /1win
-app.get('/1win', (req, res) => {
-  res.sendFile(path.join(__dirname, 'dist', 'index.html'));
-});
 
 // Запуск сервера
 app.listen(PORT, '0.0.0.0', () => {
