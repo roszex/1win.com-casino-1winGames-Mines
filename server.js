@@ -124,17 +124,17 @@ app.post('/api/reset-prediction', (req, res) => {
 
 // Главная страница - показывает открытое поле (прогноз)
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html'));
+  res.sendFile(path.join(__dirname, 'dist', 'index.html'));
 });
 
 // Страница прогноза
 app.get('/prediction', (req, res) => {
-  res.sendFile(path.join(__dirname, 'prediction.html'));
+  res.sendFile(path.join(__dirname, 'dist', 'prediction.html'));
 });
 
 // Страница обучения
 app.get('/training', (req, res) => {
-  res.sendFile(path.join(__dirname, 'training.html'));
+  res.sendFile(path.join(__dirname, 'dist', 'training.html'));
 });
 
 // Статические файлы из папки styles
