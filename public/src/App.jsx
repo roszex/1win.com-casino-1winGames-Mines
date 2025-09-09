@@ -5,6 +5,9 @@ import './App.css'
 const tg = window.Telegram?.WebApp
 
 function App() {
+  // Определяем, на какой странице мы находимся
+  const isGamePage = window.location.pathname === '/1win'
+  
   // Инициализация Telegram WebApp для полноэкранного режима
   useEffect(() => {
     if (window.Telegram && window.Telegram.WebApp) {
@@ -580,6 +583,20 @@ function App() {
       console.error('Ошибка сброса прогноза:', error)
       alert('Ошибка сброса прогноза')
     }
+  }
+
+  // Если это не страница игры, показываем прогноз
+  if (!isGamePage) {
+    return (
+      <div className="app">
+        <h1>Прогноз Mines</h1>
+        <p>Количество мин: {selectedCount}</p>
+        <p>Позиции мин: {Array.from(mines).join(', ')}</p>
+        <p>Позиции звезд: {Array.from(stars).join(', ')}</p>
+        <p>Время до обновления: {formatTime(timeLeft)}</p>
+        <button onClick={resetPrediction}>Сбросить прогноз</button>
+      </div>
+    )
   }
 
   return (
