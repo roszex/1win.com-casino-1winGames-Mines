@@ -2,6 +2,8 @@
 
 Веб-приложение с игрой Mines и системой прогнозов.
 
+**🌐 Live Demo:** [https://web-production-55991.up.railway.app](https://web-production-55991.up.railway.app)
+
 ## Функции
 
 - 🎮 Игра Mines с различным количеством мин (2, 3, 5, 7)
@@ -15,6 +17,13 @@
 - **Frontend:** React, Vite, CSS3
 - **Backend:** Node.js, Express
 - **Deployment:** Railway
+
+## Доступные страницы
+
+- **Главная:** [https://web-production-55991.up.railway.app](https://web-production-55991.up.railway.app)
+- **Игра Mines:** [https://web-production-55991.up.railway.app/1win](https://web-production-55991.up.railway.app/1win)
+- **Прогнозы:** [https://web-production-55991.up.railway.app/prediction](https://web-production-55991.up.railway.app/prediction)
+- **Обучение:** [https://web-production-55991.up.railway.app/training](https://web-production-55991.up.railway.app/training)
 
 ## Установка
 

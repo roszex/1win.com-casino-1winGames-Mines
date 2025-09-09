@@ -151,8 +151,7 @@ app.get('/1win', (req, res) => {
 // Запуск сервера
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`Сервер запущен на порту ${PORT}`);
-  console.log(`Главная страница: http://localhost:${PORT}`);
-  console.log(`Игра mines: http://localhost:${PORT}/1win`);
-  console.log(`API: http://localhost:${PORT}/api/game-data`);
-  console.log(`Для ngrok используйте: ngrok http ${PORT}`);
+  console.log(`Главная страница: https://web-production-55991.up.railway.app`);
+  console.log(`Игра mines: https://web-production-55991.up.railway.app/1win`);
+  console.log(`API: https://web-production-55991.up.railway.app/api/game-data`);
 });
