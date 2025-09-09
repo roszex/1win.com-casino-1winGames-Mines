@@ -7,12 +7,14 @@ if (!fs.existsSync(distDir)) {
   fs.mkdirSync(distDir, { recursive: true });
 }
 
-// Копируем HTML файлы
+// Копируем HTML файлы (приоритет собранным файлам)
 const htmlFiles = ['index.html', 'prediction.html', 'training.html'];
 htmlFiles.forEach(htmlFile => {
   const possiblePaths = [
-    path.join(__dirname, 'public', htmlFile),
+    path.join(__dirname, 'public', 'dist', htmlFile), // Собранные файлы
+    path.join(__dirname, 'public', htmlFile), // Исходные файлы
     path.join(__dirname, htmlFile),
+    path.join(__dirname, '..', 'public', 'dist', htmlFile),
     path.join(__dirname, '..', 'public', htmlFile),
     path.join(__dirname, '..', htmlFile)
   ];
