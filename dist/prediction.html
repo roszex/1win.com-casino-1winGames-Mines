@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <title>Ваш прогноз</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link rel="stylesheet" href="styles/prediction.css?v=1.4.0">
+  </head>
+  <body>
+    <h1>Ваш прогноз</h1>
+    
+    <div class="game-field" id="gameField">
+      <div class="loading">Загружаем ваш прогноз...</div>
+    </div>
+    
+    <div class="stats-row" id="statsRow" style="display: none;">
+      <div class="stat-item">
+        <div class="stat-icon">💣</div>
+        <div class="stat-label">Мины</div>
+        <div class="stat-value" id="minesCount">0</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-icon">⭐</div>
+        <div class="stat-label">Звезды</div>
+        <div class="stat-value" id="starsCount">0</div>
+      </div>
+    </div>
+    
+    <button class="finish-btn" onclick="finish()" id="finishBtn" style="display: none;">
+      Закончить
+    </button>
+
+    <script>
+      // Инициализация Telegram WebApp для полноэкранного режима
+      function initTelegramWebApp() {
+        if (window.Telegram && window.Telegram.WebApp) {
+          const tg = window.Telegram.WebApp;
+          
+          try {
+            // Расширяем WebApp на весь экран
+            tg.expand();
+            
+            // Запрашиваем полноэкранный режим если доступен
+            if (tg.requestFullscreen) {
+              tg.requestFullscreen();
+            }
+            
+            // Устанавливаем цвета темы для соответствия приложению
+            tg.setHeaderColor('#000000');
+            tg.setBackgroundColor('#000000');
+            
+            // Отключаем подтверждение закрытия для предотвращения сообщения "изменения могут не сохраниться"
+            if (tg.enableClosingConfirmation) {
+              // Не включаем подтверждение закрытия
+            }
+            
+            // Устанавливаем основную кнопку если нужно
+            if (tg.MainButton) {
+              tg.MainButton.hide();
+            }
+            
+            console.log('Telegram WebApp инициализирован успешно в полноэкранном режиме');
+          } catch (error) {
+            console.error('Ошибка инициализации Telegram WebApp:', error);
+          }
+        } else {
+          console.log('Telegram WebApp недоступен - запуск в режиме браузера');
+        }
+      }
+      
+      // Инициализируем WebApp
+      initTelegramWebApp();
+      
+      // Убираем анимации при загрузке - элементы статичны
+      
+      function loadPrediction() {
+        fetch('/api/game-data')
+          .then(response => response.json())
+          .then(data => {
+            if (data.lastGame && data.lastGame.minePositions.length > 0) {
+              displayGame(data.lastGame);
+            } else {
+              document.getElementById('gameField').innerHTML = '<div class="loading">Нет данных о прогнозе</div>';
+            }
+          })
+          .catch(error => {
+            console.error('Ошибка загрузки прогноза:', error);
+            document.getElementById('gameField').innerHTML = '<div class="loading">Ошибка загрузки прогноза</div>';
+          });
+      }
+
+      function displayGame(gameData) {
+        const gameField = document.getElementById('gameField');
+        
+        // Создаем контейнер для ячеек
+        gameField.innerHTML = '<div class="cells-container"></div>';
+        const cellsContainer = gameField.querySelector('.cells-container');
+        
+        const minePositions = new Set(gameData.minePositions);
+        const starPositions = new Set(gameData.starPositions);
+        
+        for (let row = 0; row < 5; row++) {
+          for (let col = 0; col < 5; col++) {
+            const cellId = row * 5 + col;
+            
+            const cell = document.createElement('div');
+            cell.className = 'game-cell revealed';
+            
+            if (minePositions.has(cellId)) {
+              cell.classList.add('mine');
+              cell.innerHTML = '<img src="mines.png" alt="mine" class="mine-image">';
+            } else {
+              cell.classList.add('star');
+              cell.innerHTML = '<img src="star.png" alt="star" class="star-image">';
+            }
+            
+            cellsContainer.appendChild(cell);
+          }
+        }
+        
+        // Обновляем счетчики
+        document.getElementById('minesCount').textContent = minePositions.size;
+        document.getElementById('starsCount').textContent = starPositions.size;
+        
+        // Показываем счетчики и кнопку
+        document.getElementById('statsRow').style.display = 'flex';
+        document.getElementById('finishBtn').style.display = 'block';
+      }
+
+      function finish() {
+        // Анимация исчезновения страницы
+        document.body.style.transition = 'opacity 0.2s ease-out, transform 0.2s ease-out';
+        document.body.style.opacity = '0';
+        document.body.style.transform = 'translateY(20px)';
+        
+        // Переход после анимации
+        setTimeout(() => {
+          window.location.href = '/';
+        }, 200);
+      }
+
+      // Загружаем прогноз при загрузке страницы
+      loadPrediction();
+    </script>
+  </body>
+</html>
