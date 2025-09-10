@@ -59,7 +59,7 @@ if (fs.existsSync(publicDistDir)) {
 }
 
 // Копируем изображения в dist
-const images = ['1win_logo.png', 'attention.png', 'background.png', 'mines.png', 'star.png'];
+const images = ['1win_logo.png', 'Logo_1win.png', 'attention.png', 'background.png', 'mines.png', 'star.png'];
 
 images.forEach(image => {
   // Проверяем несколько возможных путей
